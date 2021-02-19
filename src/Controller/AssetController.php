@@ -37,23 +37,13 @@ class AssetController extends AbstractController
         CategoryRepository $categoryRepository,
         UserRepository $userRepository): Response
     {
-        $assets = $assetRepository->findall();
+        $assets = $client->request(
+            'GET',
+            'http://127.0.0.1:8000/asset/'
+        );
 
-        $data = new SearchData();
-        $searchForm = $this->createForm(SearchFormType::class, $data);
-        $searchForm->handleRequest($request);
-
-        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            if ($data->category && $data->owner) {
-                $assets = $assetRepository->findByCategoryOwner($data->category,$data->owner);
-            } else if ($data->category) {
-                $assets = $assetRepository->findBy(['category' => $data->category]);
-            } else if ($data->owner) {
-                $assets = $assetRepository->findBy(['owner' => $data->owner]);
-            } else {
-                $assets = $assetRepository->findAll();
-            }
-        }
+        var_dump($assets);
+        die();
 
         return $this->render('asset/index.html.twig', [
              'assets' => $assets,

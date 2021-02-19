@@ -14,10 +14,10 @@
         {{ form_end(searchForm) }}
         </div>
         {% for asset in assets %}
-            <a href="{{ path('asset_show',{id: asset.id}) }}">
+             <a href="{{ path('asset_show',{id: asset.id}) }}">
                 <div class="card w-100 d-md-flex mb-3 p-2 flex-md-row align-items-center justify-content-center">
-                    <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="photo-detail"
-                         alt="{{ asset.photo }}">
+             {#      <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="photo-detail"
+                         alt="{{ asset.photo }}"> #}
                     <div class="card-body w-100">
                         <h5 class="card-title">{{ asset.title }}</h5>
                         <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>

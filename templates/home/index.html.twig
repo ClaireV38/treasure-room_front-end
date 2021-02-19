@@ -8,13 +8,12 @@
     <div class="row">
     {% for asset in assets %}
         <a class="card col-md-4 p-3 card-home" href="{{ path('asset_show',{id: asset.id}) }}">
-            <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="card-img-top photo-detail" alt="{{ asset.photo }}">
+        {#     <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="card-img-top photo-detail" alt="{{ asset.photo }}"> #}
             <div class="card-body">
                 <h5 class="card-title">{{ asset.title }}</h5>
                 <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>
                 <p class="card-text">valeur : {{ asset.value }} $</p>
                 <p class="card-text">propriétaire : {{ asset.owner.name }}</p>
-                <p class="card-text">nb votes : {{ asset.voters | length}}</p>
             </div>
         </a>
     {% endfor %}
