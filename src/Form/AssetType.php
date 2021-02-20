@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -25,7 +26,11 @@ class AssetType extends AbstractType
             ->add('value', MoneyType::class, [
                 'currency' => 'USD',
                 'required' => false
-            ]);
+            ])
+            ->add('photo', TextType::class, [
+                'required' => false
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

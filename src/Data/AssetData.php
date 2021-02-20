@@ -23,6 +23,12 @@ class AssetData
      */
     public $value;
 
+    /**
+     * @var string
+     * @Assert\Url(message="le lien doit être au format d'une url")
+     */
+    public $photo;
+
     public function getTitle(): string
     {
         return $this->title;
@@ -36,5 +42,13 @@ class AssetData
     public function getValue(): ?float
     {
         return $this->value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhoto(): string
+    {
+        return $this->photo;
     }
 }

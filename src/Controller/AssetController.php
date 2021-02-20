@@ -75,7 +75,7 @@ class AssetController extends AbstractController
                 ]
             );
             $this->addFlash('success', 'le trésor a bien été ajouté ');
-            return $this->redirectToRoute('adventurer_index');
+            return $this->redirectToRoute('app_index');
         }
         return $this->render('asset/new.html.twig', [
             'form' => $form->createView(),
