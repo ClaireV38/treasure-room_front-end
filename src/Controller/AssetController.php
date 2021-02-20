@@ -2,15 +2,6 @@
 
 namespace App\Controller;
 
-use App\Data\SearchData;
-use App\Entity\Asset;
-use App\Form\AssetType;
-use App\Form\ResetType;
-use App\Form\SearchByCategoryFormType;
-use App\Form\SearchByOwnerFormType;
-use App\Form\SearchFormType;
-use App\Repository\AssetRepository;
-use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,8 +20,6 @@ class AssetController extends AbstractController
      * @Route("/", name="index", methods={"GET"})
      * @param HttpClientInterface $client
      * @param Request $request
-     * @param AssetRepository $assetRepository
-     * @param CategoryRepository $categoryRepository
      * @param UserRepository $userRepository
      * @return Response
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
@@ -42,8 +31,6 @@ class AssetController extends AbstractController
     public function index(
         HttpClientInterface $client,
         Request $request,
-        AssetRepository $assetRepository,
-        CategoryRepository $categoryRepository,
         UserRepository $userRepository): Response
     {
         $response = $client->request(
@@ -96,12 +83,14 @@ class AssetController extends AbstractController
      */
     public function show(HttpClientInterface $client, int $id): Response
     {
+        $token = $this->getUser()->getApiToken();
+
         $response = $client->request(
             'GET',
             'http://127.0.0.1:8000/asset/' . $id,[
             'headers' => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer 1ec83b99edf7f1635690bfd4cb1315b31fbf071c87ff9565831081fac88375feb4074045d63ef2e52db73caa3b23bd01125dc3cdc613e86f88436eac'
+                'Authorization' => 'Bearer ' . $token
         ]]);
         $asset = $response->toArray();
         return $this->render('asset/show.html.twig', [
