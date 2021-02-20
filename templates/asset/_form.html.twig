@@ -2,8 +2,7 @@
   {{ form_row(form.title, { 'label': 'Nom du trésor :' }) }}
      {{ form_row(form.placeOfDiscovery, { 'label': 'Lieu de découverte :' }) }}
     {{ form_row(form.value, { 'label': 'Valeur :' }) }}
-     {{ form_row(form.category, { 'label': 'Catégorie :' }) }}
-    {{ form_row(form.photoFile, { 'label': 'Photo :' }) }}
+     {{ form_row(form.photo, { 'label': 'lien vers une photo :' }) }}
 <div class="d-flex flex-row justify-content-center">
 <button class="m-auto btn btn-primary">{{ button_label|default('Sauvegarder') }}</button>
 </div>

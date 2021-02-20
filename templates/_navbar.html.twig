@@ -10,9 +10,6 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('asset_index') }}">Inventaire</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('asset_ranking') }}">Classement</a>
-            </li>
         </ul>
         {% if app.user %}
         <div class="dropdown">
@@ -20,7 +17,7 @@
                 {{ app.user.name }}
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="{{ path('adventurer_index') }}"><i class="fas fa-user"></i> Mes trésors</a>
+                <a class="dropdown-item" href="{{ path('asset_new') }}"><i class="fas fa-user"></i> Ajouter un trésor</a>
                 <a class="dropdown-item" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
             </div>
         </div>

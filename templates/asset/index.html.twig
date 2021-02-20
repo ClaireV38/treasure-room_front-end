@@ -5,26 +5,21 @@
 {% block body %}
     <div class="container h-100">
         <h1 class="text-center">Inventaire des trésors</h1>
-        <div>
-        <h2 class="text-center m-3">Recherche</h2>
-        {{ form_start(searchForm) }}
-        {{ form_row(searchForm.category, {'label': 'par catégorie :'}) }}
-        {{ form_row(searchForm.owner, {'label': 'par aventurier :'}) }}
-        <button id="index-container-button" class="btn btn-primary">Appliquer</button>
-        {{ form_end(searchForm) }}
-        </div>
         {% for asset in assets %}
-            <a href="{{ path('asset_show',{id: asset.id}) }}">
+             <a href="{{ path('asset_show',{id: asset.id}) }}">
                 <div class="card w-100 d-md-flex mb-3 p-2 flex-md-row align-items-center justify-content-center">
-                    <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="photo-detail"
+                   <img src="{{ asset.photo }}" class="photo-detail"
                          alt="{{ asset.photo }}">
                     <div class="card-body w-100">
                         <h5 class="card-title">{{ asset.title }}</h5>
                         <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>
                         <p class="card-text">valeur : {{ asset.value }} $</p>
+                        {% if asset.category %}
                         <p class="card-text">categorie : {{ asset.category.name }}</p>
+                        {% endif %}
+                        {% if asset.owner %}
                         <p class="card-text">propriétaire : {{ asset.owner.name }}</p>
-                        <p class="card-text">nb votes : {{ asset.voters| length }}</p>
+                        {% endif %}
                     </div>
                 </div>
             </a>

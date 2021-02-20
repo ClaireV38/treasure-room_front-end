@@ -2,21 +2,17 @@
 
 namespace App\Controller;
 
+use App\Data\AssetData;
 use App\Data\SearchData;
-use App\Entity\Asset;
 use App\Form\AssetType;
-use App\Form\ResetType;
-use App\Form\SearchByCategoryFormType;
-use App\Form\SearchByOwnerFormType;
-use App\Form\SearchFormType;
-use App\Repository\AssetRepository;
-use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @Route("/asset", name="asset_")
@@ -24,105 +20,93 @@ use Symfony\Component\Routing\Annotation\Route;
 class AssetController extends AbstractController
 {
     /**
-     * @Route("/", name="index", methods={"GET","POST"})
+     * @Route("/", name="index", methods={"GET"})
+     * @param HttpClientInterface $client
      * @param Request $request
-     * @param AssetRepository $assetRepository
-     * @param CategoryRepository $categoryRepository
      * @param UserRepository $userRepository
      * @return Response
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function index(
+        HttpClientInterface $client,
         Request $request,
-        AssetRepository $assetRepository,
-        CategoryRepository $categoryRepository,
         UserRepository $userRepository): Response
     {
-        $assets = $assetRepository->findall();
-
-        $data = new SearchData();
-        $searchForm = $this->createForm(SearchFormType::class, $data);
-        $searchForm->handleRequest($request);
-
-        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            if ($data->category && $data->owner) {
-                $assets = $assetRepository->findByCategoryOwner($data->category,$data->owner);
-            } else if ($data->category) {
-                $assets = $assetRepository->findBy(['category' => $data->category]);
-            } else if ($data->owner) {
-                $assets = $assetRepository->findBy(['owner' => $data->owner]);
-            } else {
-                $assets = $assetRepository->findAll();
-            }
-        }
-
+        $response = $client->request(
+            'GET',
+            'http://127.0.0.1:8000/asset/'
+        );
+        $assets = $response->toArray();
         return $this->render('asset/index.html.twig', [
-             'assets' => $assets,
-             'searchForm' => $searchForm->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/ranking", name="ranking", methods={"GET"})
-     * @param AssetRepository $assetRepository
-     * @return Response
-     */
-    public function ranking(AssetRepository $assetRepository): Response
-    {
-        $assets = $assetRepository->findAllOrderByNbVotes();
-        return $this->render('asset/ranking.html.twig', [
             'assets' => $assets,
         ]);
     }
 
     /**
      * @Route("/new", name="new", methods={"GET","POST"})
+     * @param Request $request
+     * @param HttpClientInterface $client
+     * @return Response
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function new(Request $request): Response
+    public function new(Request $request, HttpClientInterface $client): Response
     {
-        $asset = new Asset();
-        $form = $this->createForm(AssetType::class, $asset);
+        $assetData = new AssetData();
+        $form = $this->createForm(AssetType::class, $assetData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($asset);
-            $asset->setDepositDate(new \DateTime('now'));
-            $asset->setOwner($this->getUser());
-            $entityManager->flush();
+            $token = $this->getUser()->getApiToken();
+            $arrayAsset = (array) $assetData;
+
+            $response = $client->request(
+                'POST',
+                'http://127.0.0.1:8000/asset/', [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $token,
+                    ],
+                    'json' =>
+                        $arrayAsset
+                ]
+            );
             $this->addFlash('success', 'le trésor a bien été ajouté ');
-
-            return $this->redirectToRoute('adventurer_index');
+            return $this->redirectToRoute('app_index');
         }
-
         return $this->render('asset/new.html.twig', [
-            'asset' => $asset,
             'form' => $form->createView(),
         ]);
     }
 
-    /**
-     * @Route("/{id}/vote", name="vote", methods={"GET"})
-     */
-    public function voteFor(Asset $asset, EntityManagerInterface  $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        if ($this->getUser()->getVotes()->contains($asset)) {
-            $this->getUser()->removeVote($asset);
-        }
-        else {
-            $this->getUser()->addVote($asset);
-        }
-        $entityManager->flush();
-        return $this->json([
-            'hasVotedFor' => $this->getUser()->hasVotedFor($asset)
-        ]);
-    }
 
     /**
      * @Route("/{id}", name="show", methods={"GET"})
+     * @param HttpClientInterface $client
+     * @param int $id
+     * @return Response
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @IsGranted("ROLE_USER")
      */
-    public function show(Asset $asset): Response
+    public function show(HttpClientInterface $client, int $id): Response
     {
+        $token = $this->getUser()->getApiToken();
+
+        $response = $client->request(
+            'GET',
+            'http://127.0.0.1:8000/asset/' . $id, [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $token
+            ]]);
+        $asset = $response->toArray();
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
         ]);
@@ -131,7 +115,8 @@ class AssetController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Asset $asset): Response
+    public
+    function edit(Request $request, Asset $asset): Response
     {
         $form = $this->createForm(AssetType::class, $asset);
         $form->handleRequest($request);
@@ -151,9 +136,10 @@ class AssetController extends AbstractController
     /**
      * @Route("/{id}", name="delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Asset $asset): Response
+    public
+    function delete(Request $request, Asset $asset): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $asset->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($asset);
             $entityManager->flush();

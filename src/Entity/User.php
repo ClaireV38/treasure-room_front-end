@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -38,33 +36,9 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Asset::class, mappedBy="owner")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $assets;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Asset::class, inversedBy="voters")
-     */
-    private $votes;
-
-    public function __construct()
-    {
-        $this->assets = new ArrayCollection();
-        $this->votes = new ArrayCollection();
-    }
-
-    /**
-     * @param Asset $asset
-     * @return bool
-     */
-    public function hasVotedFor(Asset $asset) : bool
-    {
-        if ($this->votes->contains($asset)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    private $apiToken;
 
     public function getId(): ?int
     {
@@ -144,57 +118,15 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection|Asset[]
-     */
-    public function getAssets(): Collection
+    public function getApiToken(): ?string
     {
-        return $this->assets;
+        return $this->apiToken;
     }
 
-    public function addAsset(Asset $asset): self
-    {
-        if (!$this->assets->contains($asset)) {
-            $this->assets[] = $asset;
-            $asset->setOwner($this);
-        }
+    public function setApiToken(?string $apiToken): self
+     {
+         $this->apiToken = $apiToken;
 
-        return $this;
-    }
-
-    public function removeAsset(Asset $asset): self
-    {
-        if ($this->assets->removeElement($asset)) {
-            // set the owning side to null (unless already changed)
-            if ($asset->getOwner() === $this) {
-                $asset->setOwner(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Asset[]
-     */
-    public function getVotes(): Collection
-    {
-        return $this->votes;
-    }
-
-    public function addVote(Asset $vote): self
-    {
-        if (!$this->votes->contains($vote)) {
-            $this->votes[] = $vote;
-        }
-
-        return $this;
-    }
-
-    public function removeVote(Asset $vote): self
-    {
-        $this->votes->removeElement($vote);
-
-        return $this;
-    }
+         return $this;
+     }
 }
