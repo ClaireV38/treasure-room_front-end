@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @Route("/asset", name="asset_")
@@ -32,22 +33,19 @@ class AssetController extends AbstractController
      * @return Response
      */
     public function index(
+        HttpClientInterface $client,
         Request $request,
         AssetRepository $assetRepository,
         CategoryRepository $categoryRepository,
         UserRepository $userRepository): Response
     {
-        $assets = $client->request(
+        $response = $client->request(
             'GET',
             'http://127.0.0.1:8000/asset/'
         );
-
-        var_dump($assets);
-        die();
-
+        $assets =$response->toArray();
         return $this->render('asset/index.html.twig', [
              'assets' => $assets,
-             'searchForm' => $searchForm->createView(),
         ]);
     }
 
