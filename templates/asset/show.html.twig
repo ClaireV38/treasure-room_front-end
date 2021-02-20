@@ -6,9 +6,8 @@
     <div class="container">
         <div class="jumbotron p-md-3 mt-md-4">
             <h1 class="text-center">{{ asset.title }}</h1>
-            {#
-            <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="photo-detail" alt="{{ asset.photo }}">
-            #}
+            <img src="{{ asset.photo }}" class="photo-detail" alt="{{ asset.photo }}">
+
             <hr class="my-4">
             <table class="table">
                 <tbody>

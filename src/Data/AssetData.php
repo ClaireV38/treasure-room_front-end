@@ -3,13 +3,13 @@
 
 namespace App\Data;
 
-use App\Entity\Category;
-use App\Entity\User;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class AssetData
 {
     /**
      * @var string
+     * @Assert\NotBlank(message="Veuillez saisir un titre.")
      */
     public $title;
 
