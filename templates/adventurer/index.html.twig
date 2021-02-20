@@ -6,22 +6,5 @@
         <div class="d-flex flex-row justify-content-center mb-2">
             <a class="btn btn-primary" href="{{ path('asset_new') }}">Ajouter un trésor</a>
         </div>
-        <h5 class="text-center">Voici vos trésors déposés dans la salle :</h5>
-        {% for asset in assets %}
-            <a href="{{ path('asset_show',{id: asset.id}) }}">
-                <div class="card w-100 d-md-flex mb-3 p-2 flex-md-row align-items-center justify-content-center">
-                    <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="photo-detail"
-                         alt="{{ asset.photo }}">
-                    <div class="card-body w-100">
-                        <h5 class="card-title">{{ asset.title }}</h5>
-                        <p class="card-text">lieu de découverte : {{ asset.placeOfDiscovery }}</p>
-                        <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>
-                        <p class="card-text">valeur : {{ asset.value }} $</p>
-                    </div>
-                </div>
-            </a>
-        {% else %}
-            <p class="text-center">vous n'avez pas encore de trésor</p>
-        {% endfor %}
     </div>
 {% endblock %}
