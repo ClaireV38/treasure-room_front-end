@@ -13,6 +13,7 @@ use App\Repository\AssetRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,12 +26,18 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class AssetController extends AbstractController
 {
     /**
-     * @Route("/", name="index", methods={"GET","POST"})
+     * @Route("/", name="index", methods={"GET"})
+     * @param HttpClientInterface $client
      * @param Request $request
      * @param AssetRepository $assetRepository
      * @param CategoryRepository $categoryRepository
      * @param UserRepository $userRepository
      * @return Response
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function index(
         HttpClientInterface $client,
@@ -43,21 +50,8 @@ class AssetController extends AbstractController
             'GET',
             'http://127.0.0.1:8000/asset/'
         );
-        $assets =$response->toArray();
+        $assets = $response->toArray();
         return $this->render('asset/index.html.twig', [
-             'assets' => $assets,
-        ]);
-    }
-
-    /**
-     * @Route("/ranking", name="ranking", methods={"GET"})
-     * @param AssetRepository $assetRepository
-     * @return Response
-     */
-    public function ranking(AssetRepository $assetRepository): Response
-    {
-        $assets = $assetRepository->findAllOrderByNbVotes();
-        return $this->render('asset/ranking.html.twig', [
             'assets' => $assets,
         ]);
     }
@@ -89,28 +83,27 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/vote", name="vote", methods={"GET"})
-     */
-    public function voteFor(Asset $asset, EntityManagerInterface  $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        if ($this->getUser()->getVotes()->contains($asset)) {
-            $this->getUser()->removeVote($asset);
-        }
-        else {
-            $this->getUser()->addVote($asset);
-        }
-        $entityManager->flush();
-        return $this->json([
-            'hasVotedFor' => $this->getUser()->hasVotedFor($asset)
-        ]);
-    }
-
-    /**
      * @Route("/{id}", name="show", methods={"GET"})
+     * @param HttpClientInterface $client
+     * @param int $id
+     * @return Response
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @IsGranted("ROLE_USER")
      */
-    public function show(Asset $asset): Response
+    public function show(HttpClientInterface $client, int $id): Response
     {
+        $response = $client->request(
+            'GET',
+            'http://127.0.0.1:8000/asset/' . $id,[
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer 1ec83b99edf7f1635690bfd4cb1315b31fbf071c87ff9565831081fac88375feb4074045d63ef2e52db73caa3b23bd01125dc3cdc613e86f88436eac'
+        ]]);
+        $asset = $response->toArray();
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
         ]);
@@ -141,7 +134,7 @@ class AssetController extends AbstractController
      */
     public function delete(Request $request, Asset $asset): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $asset->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($asset);
             $entityManager->flush();
