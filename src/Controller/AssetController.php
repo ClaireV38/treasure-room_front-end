@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Data\AssetData;
+use App\Data\SearchData;
+use App\Form\AssetType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -45,29 +48,40 @@ class AssetController extends AbstractController
 
     /**
      * @Route("/new", name="new", methods={"GET","POST"})
+     * @param Request $request
+     * @param HttpClientInterface $client
+     * @return Response
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function new(Request $request): Response
+    public function new(Request $request, HttpClientInterface $client): Response
     {
-        $asset = new Asset();
-        $form = $this->createForm(AssetType::class, $asset);
+        $assetData = new AssetData();
+        $form = $this->createForm(AssetType::class, $assetData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($asset);
-            $asset->setDepositDate(new \DateTime('now'));
-            $asset->setOwner($this->getUser());
-            $entityManager->flush();
-            $this->addFlash('success', 'le trésor a bien été ajouté ');
+            $token = $this->getUser()->getApiToken();
+            $arrayAsset = (array) $assetData;
 
+            $response = $client->request(
+                'POST',
+                'http://127.0.0.1:8000/asset/', [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $token,
+                    ],
+                    'json' =>
+                        $arrayAsset
+                ]
+            );
+            $this->addFlash('success', 'le trésor a bien été ajouté ');
             return $this->redirectToRoute('adventurer_index');
         }
-
         return $this->render('asset/new.html.twig', [
-            'asset' => $asset,
             'form' => $form->createView(),
         ]);
     }
+
 
     /**
      * @Route("/{id}", name="show", methods={"GET"})
@@ -87,11 +101,11 @@ class AssetController extends AbstractController
 
         $response = $client->request(
             'GET',
-            'http://127.0.0.1:8000/asset/' . $id,[
+            'http://127.0.0.1:8000/asset/' . $id, [
             'headers' => [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $token
-        ]]);
+            ]]);
         $asset = $response->toArray();
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
@@ -101,7 +115,8 @@ class AssetController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Asset $asset): Response
+    public
+    function edit(Request $request, Asset $asset): Response
     {
         $form = $this->createForm(AssetType::class, $asset);
         $form->handleRequest($request);
@@ -121,7 +136,8 @@ class AssetController extends AbstractController
     /**
      * @Route("/{id}", name="delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Asset $asset): Response
+    public
+    function delete(Request $request, Asset $asset): Response
     {
         if ($this->isCsrfTokenValid('delete' . $asset->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
