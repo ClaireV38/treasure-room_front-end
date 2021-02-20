@@ -1,16 +1,13 @@
-# checkpoint4_treasure_room 
+# treasure room front end part
 
-this is the inventory of the treasure room that repertories all assets discovered by each adventurer of the kingdom
+this is the front end part of the treasure room app
 
-each adventurer has the possibility to :
-- see last 3 items deposited on the home page
-- see the details of each item
-- acces to the list of all items
-- filter them by category or by owner
-- login to see the list of his own items
-- add / edit and delete its own items (with photo upload)
-- vote for its favorites assets among the possession of the other adventurers
-- access to the ranking of the votes
+by sendind requests towards treasure room's web-service this app permits :
+
+- simple user to get the list of last 3 treasures on the home page
+- simple user to get the lis tof all treasures on the inventory page
+- logged-in user to the the detail of one particular treasure
+- logged-in user to add a treasure in the treasure room
 
 # to set up :
 
