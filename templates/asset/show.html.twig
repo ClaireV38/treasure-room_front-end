@@ -11,10 +11,12 @@
             <hr class="my-4">
             <table class="table">
                 <tbody>
+                {% if asset.owner %}
                 <tr>
                     <th>propriétaire</th>
                     <td>{{ asset.owner.name }}</td>
                 </tr>
+                {% endif %}
                 <tr>
                     <th>lieu de découverte</th>
                     <td>{{ asset.placeOfDiscovery }}</td>
@@ -27,10 +29,12 @@
                     <th>Valeur</th>
                     <td>{{ asset.value }}$</td>
                 </tr>
+                {% if asset.category %}
                 <tr>
                     <th>Catégorie</th>
                     <td>{{ asset.category.name }}</td>
                 </tr>
+                {% endif %}
                 </tbody>
             </table>
             <div class="d-flex flex-row justify-content-around">
