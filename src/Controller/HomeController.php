@@ -23,7 +23,7 @@ class HomeController extends AbstractController
             'http://127.0.0.1:8000/asset/'
         );
         $assets =$response->toArray();
-        $lastAssets = array_slice($assets,0,3);
+        $lastAssets = array_slice($assets,-3,3);
 
         return $this->render('home/index.html.twig', [
             'assets' => $lastAssets
