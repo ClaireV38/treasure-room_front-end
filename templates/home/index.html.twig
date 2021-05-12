@@ -11,7 +11,7 @@
         <img src="{{ asset.photo }}" class="card-img-top photo-detail" alt="{{ asset.photo }}">
             <div class="card-body">
                 <h5 class="card-title">{{ asset.title }}</h5>
-                <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>
+                <p class="card-text">date de dépot : {{ asset.deposit_date  |date("d/m/Y") }}</p>
                 <p class="card-text">valeur : {{ asset.value }} $</p>
                 {% if asset.owner %}
                 <p class="card-text">propriétaire : {{ asset.owner.name }}</p>

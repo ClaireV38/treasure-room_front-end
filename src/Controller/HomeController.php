@@ -20,9 +20,9 @@ class HomeController extends AbstractController
     {
         $response = $client->request(
             'GET',
-            'http://127.0.0.1:8000/asset/'
+            'http://127.0.0.1:8000/api/v1/assets/'
         );
-        $assets =$response->toArray();
+        $assets =$response->toArray()['data'];
         $lastAssets = array_slice($assets,-3,3);
 
         return $this->render('home/index.html.twig', [
