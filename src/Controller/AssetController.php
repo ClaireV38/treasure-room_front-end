@@ -93,17 +93,18 @@ class AssetController extends AbstractController
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @IsGranted("ROLE_USER")
      */
     public function show(HttpClientInterface $client, int $id): Response
     {
-/*        $token = $this->getUser()->getApiToken();   */
-
+        $token = $this->getUser()->getApiToken();
+        
         $response = $client->request(
             'GET',
             'http://127.0.0.1:8000/api/v1/assets/' . $id, [
             'headers' => [
                 'Accept' => 'application/json',
- /*               'Authorization' => 'Bearer ' . $token  */
+                'Authorization' => 'Bearer ' . $token
             ]]);
         $asset = $response->toArray()['data'][0];
         return $this->render('asset/show.html.twig', [

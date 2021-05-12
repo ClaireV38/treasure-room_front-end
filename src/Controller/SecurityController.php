@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class SecurityController extends AbstractController
 {
@@ -38,9 +39,10 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/token", name="app_token")
+     * @Route("/token/{targetPath}", name="app_token")
+     * @param string $targetPath
      * @param HttpClientInterface $client
-     * @param EntityManager $entityManager
+     * @param EntityManagerInterface $entityManager
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -50,8 +52,9 @@ class SecurityController extends AbstractController
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function getToken(HttpClientInterface $client, EntityManagerInterface $entityManager)
+    public function getToken(string $targetPath, HttpClientInterface $client, EntityManagerInterface $entityManager)
     {
+
         $arrayAuthenticate = [
             'grant_type' => 'password',
             'client_id' => '93696e7e-e302-4ebe-b50f-e976e7a20f2a',
@@ -72,6 +75,10 @@ class SecurityController extends AbstractController
         $user = $this->getUser();
         $user->setApiToken($response->toArray()['access_token']);
         $entityManager->flush();
-        return $this->redirectToRoute('app_index');
+        if ('home' == $targetPath) {
+            return $this->redirectToRoute('app_index');
+        } else
+            $targetPath = str_replace('*', '/', $targetPath);
+        return new RedirectResponse($targetPath);
     }
 }
