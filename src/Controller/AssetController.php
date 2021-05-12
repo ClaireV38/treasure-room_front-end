@@ -61,17 +61,16 @@ class AssetController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $token = $this->getUser()->getApiToken();
-            $arrayAsset = (array) $assetData;
+            $arrayAsset = (array)$assetData;
 
             $response = $client->request(
                 'POST',
-                'http://127.0.0.1:8000/asset/', [
+                'http://127.0.0.1:8000/api/v1/assets', [
                     'headers' => [
                         'Accept' => 'application/json',
                         'Authorization' => 'Bearer ' . $token,
                     ],
-                    'json' =>
-                        $arrayAsset
+                    'json' => $arrayAsset
                 ]
             );
             $this->addFlash('success', 'le trésor a bien été ajouté ');
@@ -98,7 +97,7 @@ class AssetController extends AbstractController
     public function show(HttpClientInterface $client, int $id): Response
     {
         $token = $this->getUser()->getApiToken();
-        
+
         $response = $client->request(
             'GET',
             'http://127.0.0.1:8000/api/v1/assets/' . $id, [
