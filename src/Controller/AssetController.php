@@ -136,14 +136,18 @@ class AssetController extends AbstractController
      * @Route("/{id}", name="delete", methods={"DELETE"})
      */
     public
-    function delete(Request $request, Asset $asset): Response
+    function delete(int $id, HttpClientInterface $client): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $asset->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($asset);
-            $entityManager->flush();
-        }
+        $token = $this->getUser()->getApiToken();
 
-        return $this->redirectToRoute('adventurer_index');
+        $response = $client->request(
+            'DELETE',
+            'http://127.0.0.1:8000/api/v1/assets/' . $id, [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $token
+            ]]);
+
+        return $this->redirectToRoute('app_index');
     }
 }
