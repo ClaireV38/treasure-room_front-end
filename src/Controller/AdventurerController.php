@@ -29,6 +29,5 @@ class AdventurerController extends AbstractController
         return $this->render('adventurer/index.html.twig', [
             'assets' => $adventurerAssets
         ]);
-
     }
 }

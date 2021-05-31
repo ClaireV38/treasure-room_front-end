@@ -59,7 +59,7 @@ class SecurityController extends AbstractController
             'grant_type' => 'password',
             'client_id' => '93696e7e-e302-4ebe-b50f-e976e7a20f2a',
             'client_secret' => 'JVnptbFa3HrCygv1b7Lz9MqapfNGvR83DabSMDQM',
-            'username' => 'su@gmail.com',
+            'username' => $this->getUser()->getUsername(),
             'password' => '1234',
         ];
         $response = $client->request(
