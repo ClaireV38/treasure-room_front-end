@@ -113,11 +113,14 @@ class AssetController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param int $id
+     * @return Response
      */
-    public
-    function edit(Request $request, Asset $asset): Response
+    public function edit(Request $request, int $id): Response
     {
-        $form = $this->createForm(AssetType::class, $asset);
+        $assetData = new AssetData();
+        $form = $this->createForm(AssetType::class, $assetData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -127,7 +130,6 @@ class AssetController extends AbstractController
         }
 
         return $this->render('asset/edit.html.twig', [
-            'asset' => $asset,
             'form' => $form->createView(),
         ]);
     }
