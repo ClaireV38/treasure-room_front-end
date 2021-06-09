@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c641ac84dda42863cf663702168aac21",
+    "content-hash": "2c85a24cfba04b00508ca2dfac923b3d",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5920,16 +5920,16 @@
         },
         {
             "name": "symfony/serializer",
-            "version": "v5.2.3",
+            "version": "v5.2.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "70c5aa59ab0642033391a5591c9771ee417e7cef"
+                "reference": "e6b20ac94f1d0553b84cdb268600db021067727f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/70c5aa59ab0642033391a5591c9771ee417e7cef",
-                "reference": "70c5aa59ab0642033391a5591c9771ee417e7cef",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/e6b20ac94f1d0553b84cdb268600db021067727f",
+                "reference": "e6b20ac94f1d0553b84cdb268600db021067727f",
                 "shasum": ""
             },
             "require": {
@@ -5947,7 +5947,6 @@
             },
             "require-dev": {
                 "doctrine/annotations": "^1.10.4",
-                "doctrine/cache": "~1.0",
                 "phpdocumentor/reflection-docblock": "^3.2|^4.0|^5.0",
                 "symfony/cache": "^4.4|^5.0",
                 "symfony/config": "^4.4|^5.0",
@@ -5966,8 +5965,6 @@
                 "symfony/yaml": "^4.4|^5.0"
             },
             "suggest": {
-                "doctrine/annotations": "For using the annotation mapping. You will also need doctrine/cache.",
-                "doctrine/cache": "For using the default cached annotation reader and metadata cache.",
                 "psr/cache-implementation": "For using the metadata cache.",
                 "symfony/config": "For using the XML mapping loader.",
                 "symfony/mime": "For using a MIME type guesser within the DataUriNormalizer.",
@@ -6001,6 +5998,9 @@
             ],
             "description": "Handles serializing and deserializing data structures, including object graphs, into array structures or other formats like XML and JSON.",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/serializer/tree/v5.2.10"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -6015,7 +6015,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-02-03T04:42:09+00:00"
+            "time": "2021-05-26T12:52:38+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -8156,8 +8156,9 @@
     "platform": {
         "php": ">=7.2.5",
         "ext-ctype": "*",
+        "ext-http": "*",
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }
