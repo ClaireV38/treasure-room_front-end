@@ -51,4 +51,38 @@ class AssetData
     {
         return $this->photo;
     }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @param string $placeOfDiscovery
+     */
+    public function setPlaceOfDiscovery(string $placeOfDiscovery): void
+    {
+        $this->placeOfDiscovery = $placeOfDiscovery;
+    }
+
+    /**
+     * @param float $value
+     */
+    public function setValue(float $value): void
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * @param string $photo
+     */
+    public function setPhoto(string $photo): void
+    {
+        $this->photo = $photo;
+    }
+
+
 }
