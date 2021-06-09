@@ -12,10 +12,10 @@
             <table class="table">
                 <tbody>
                 {% if asset.owner %}
-                <tr>
-                    <th>propriétaire</th>
-                    <td>{{ asset.owner.name }}</td>
-                </tr>
+                    <tr>
+                        <th>propriétaire</th>
+                        <td>{{ asset.owner.name }}</td>
+                    </tr>
                 {% endif %}
                 <tr>
                     <th>lieu de découverte</th>
@@ -30,15 +30,16 @@
                     <td>{{ asset.value }}$</td>
                 </tr>
                 {% if asset.category %}
-                <tr>
-                    <th>Catégorie</th>
-                    <td>{{ asset.category.name }}</td>
-                </tr>
+                    <tr>
+                        <th>Catégorie</th>
+                        <td>{{ asset.category.name }}</td>
+                    </tr>
                 {% endif %}
                 </tbody>
             </table>
             <div class="d-flex flex-row justify-content-around">
-            <a class="m-auto btn btn-primary" href="{{app.request.headers.get('referer')}}">retour</a>
+                <a class="btn btn-primary" href="{{ app.request.headers.get('referer') }}">retour</a>
+                <a class="btn btn-primary" href="{{ path('asset_edit', {'id': asset.id}) }}">éditer</a>
                 {{ include('asset/_delete_form.html.twig') }}
             </div>
         </div>
