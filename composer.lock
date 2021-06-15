@@ -5,7 +5,7 @@
         "This file is @generated automatically"
     ],
     "content-hash": "2c85a24cfba04b00508ca2dfac923b3d",
-    "packages": [
+    "packages": [user,
         {
             "name": "composer/package-versions-deprecated",
             "version": "1.11.99.1",

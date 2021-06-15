@@ -39,8 +39,10 @@
             </table>
             <div class="d-flex flex-row justify-content-around">
                 <a class="btn btn-primary" href="{{ app.request.headers.get('referer') }}">retour</a>
+                {% if app.user.id == asset.owner.id  or is_granted('ROLE_ADMIN')%}
                 <a class="btn btn-primary" href="{{ path('asset_edit', {'id': asset.id}) }}">éditer</a>
                 {{ include('asset/_delete_form.html.twig') }}
+                {% endif %}
             </div>
         </div>
     </div>
