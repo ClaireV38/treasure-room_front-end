@@ -77,9 +77,9 @@ class AssetData
     }
 
     /**
-     * @param string $photo
+     * @param string $photo | null
      */
-    public function setPhoto(string $photo): void
+    public function setPhoto(?string $photo): void
     {
         $this->photo = $photo;
     }
